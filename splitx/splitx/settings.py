@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "user",
     "rest_framework",
     "rest_framework_simplejwt",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -132,10 +133,17 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '10/min',  
+        'anon': '100/min', 
+    },
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Increase the expiry time as needed
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    # ...other settings...
 }
