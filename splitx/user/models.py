@@ -54,7 +54,7 @@ class Transaction(models.Model):
 
     class ExpenseType(models.TextChoices):
         INCOME = 'Income'
-        FOOD = 'Expense'
+        FOOD = 'food'
         TRANSFER = 'Transfer'
         ENTERTAINMENT = 'Entertainment'
         SHOPPING = 'Shopping'
