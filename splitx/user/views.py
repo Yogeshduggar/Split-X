@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
-from .serializer import SettlementSerializer, UserSerializer,TransactionSerializer
+from .serializer import GroupSerializer, SettlementSerializer, UserSerializer,TransactionSerializer
 from rest_framework import permissions
 from .models import Group, Settlement, Transaction, User
 from rest_framework.permissions import IsAuthenticated
@@ -175,4 +175,60 @@ def stats_monthly(request):
         print("error ocuccered at stats_monthly", str(e))
         return JsonResponse("Something Went Wrong", status=400)
     
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def group(request):
+    try:
+        user = request.user
+        groups = Group.objects.filter(users__email=user)
+        group_serializer = GroupSerializer(groups, many=True)
+        return JsonResponse(group_serializer.data, safe=False, status=200)
+    except Exception as e:
+        print("error ocuccered at group", str(e))
+        return JsonResponse("Something Went Wrong", status=400)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_group(request):
+    try:
+        user = request.user
+        data = request.data
+        admin_user_Obj = User.objects.get(email=user) 
+        data['user_admin'] = [admin_user_Obj]
+        user_Obj = User.objects.filter(email__in=user)
+        data['users'] = [user_Obj]
+        serializer = GroupSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+    except Exception as e:
+        print("error ocuccered at create_group", str(e))
+        return JsonResponse("Something Went Wrong", status=400)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_group(request):
+    try:
+        user = request.user
+        data = request.data
+        group = Group.objects.get(id=data.get('id'))
+        if user not in group.user_admin.all():
+            return JsonResponse("You are not authorized to update this group", status=400)
+        if data.get('name'):
+            group.name = data.get('name')
+        if data.get('description'):
+            group.description = data.get('description')
+        if data.get('users'):
+            users = User.objects.filter(email__in=data.get('users'))
+            group.users.set(users)
+        if data.get('user_admin'):
+            user_admin = User.objects.filter(email__in=data.get('user_admin'))
+            group.user_admin.set(user_admin)
+        group.save()
+        group_serializer = GroupSerializer(group)
+        return JsonResponse(group_serializer, status=200)
+    except Exception as e:
+        print("error ocuccered at update_group", str(e))
+        return JsonResponse("Something Went Wrong", status=400)
 

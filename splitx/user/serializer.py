@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Transaction, Settlement
+from .models import User, Transaction, Settlement,Group
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class SettlementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Settlement
         fields = ['id', 'group', 'message', 'status', 'user_to_pay', 'user_to_be_paid', 'amount', 'created_at']
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['id', 'name', 'description', 'user_admin', 'users', 'created_at', 'updated_at']

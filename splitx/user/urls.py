@@ -13,6 +13,7 @@ urlpatterns = [
     # path("settlement/settle", views.settle, name="settle"),
     path("stats/monthly", views.stats_monthly, name="monthly-stats"),
     # path("smart-bill/", views.smart_bill, name="smart-bill"),
-    # path("group/", views.group, name="group"),
-    
+    path("group/", views.group, name="group"),
+    path("group/create", views.create_group, name="group-create"),
+    path("group/update", views.update_group, name="group-update"),
 ]
