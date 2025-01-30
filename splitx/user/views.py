@@ -250,11 +250,18 @@ def stats_monthly(request):
         total = 0
         category_totals = {}
         for transaction in transactions:
-            total += transaction.amount
+            if transaction.type == 'Debit':
+                total -= transaction.amount
+            else:
+                total += transaction.amount
             category = transaction.category
             if category not in category_totals:
                 category_totals[category] = 0
-            category_totals[category] += transaction.amount
+
+            if transaction.type == 'Debit':
+                category_totals[category] -= transaction.amount
+            else:
+                category_totals[category] += transaction.amount
         return JsonResponse({'total': total, 'category_totals': category_totals}, status=200)
     except Exception as e:
         print("error ocuccered at stats_monthly", str(e))
