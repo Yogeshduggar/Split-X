@@ -200,6 +200,7 @@ def expense_split(request):
         group_obj = Group.objects.get(id=group)
         user_to_be_paid = request.user
         res = []
+        amount = amount/len(users_to_pay)
         for user in users_to_pay:
             if user == user_to_be_paid:
                 continue
@@ -366,6 +367,12 @@ def settle(request):
         if data.get('payment_done'):
             settlement.status = 'Settled'
             settlement.save()
+            Transaction.objects.create({
+                'user': settlement.user_to_be_paid,
+                'type': 'Credit',
+                'category': 'Settlement',
+                'amount': settlement.amount
+            })
         else:
             amount = settlement.amount
             upi_id = os.getenv('UPI_ID')
@@ -407,6 +414,7 @@ def smart_bill(request):
             if request.data.get('group'):
                 group = Group.objects.get(id= request.data.get('group'))
                 users = group.users.all()
+                amount = amount/len(users)
                 for user in users:
                     if user != a_user:
                         settlement = Settlement.objects.create(

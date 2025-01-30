@@ -60,6 +60,7 @@ class Transaction(models.Model):
         SHOPPING = 'Shopping'
         TRAVEL = 'Travel'
         ACADEMICS = 'Academics'
+        SETTLEMENT ='Settlement'
 
     id = models.UUIDField(primary_key=True, default=uu.uuid1, editable=False)
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='transactions')
