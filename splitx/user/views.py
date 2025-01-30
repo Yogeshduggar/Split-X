@@ -389,7 +389,7 @@ def settle(request):
         type=openapi.TYPE_OBJECT,
         properties={
             'image': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_BINARY),
-            'group': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'group': openapi.Schema(type=openapi.TYPE_STRING),
         },
         required=['image'],
     ),
