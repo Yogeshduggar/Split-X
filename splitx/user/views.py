@@ -181,7 +181,7 @@ def create_expense(request):
         properties={
             'users_to_pay': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
             'amount': openapi.Schema(type=openapi.TYPE_NUMBER),
-            'group': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'group': openapi.Schema(type=openapi.TYPE_STRING),
         },
         required=['users_to_pay', 'amount', 'group'],
     ),
